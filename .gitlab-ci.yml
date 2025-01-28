@@ -2,5 +2,6 @@ variables:
   CI_DOCKERHUB_IMAGE: huncrys/samba
 
 include:
-  - component: $CI_SERVER_FQDN/oaklab/ci-templates/kaniko-build@~latest
-  - component: $CI_SERVER_FQDN/oaklab/ci-templates/manifest-tool-manifest@~latest
+  - component: $CI_SERVER_FQDN/oaklab/ci-templates/docker-publish@~latest
+    inputs:
+      licenses: AGPL-3.0-or-later
