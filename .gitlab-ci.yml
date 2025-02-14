@@ -5,3 +5,12 @@ include:
   - component: $CI_SERVER_FQDN/oaklab/ci-templates/docker-publish@~latest
     inputs:
       licenses: AGPL-3.0-or-later
+      architectures:
+        - amd64
+        - "386"
+        - arm64
+        - arm/v7
+        - arm/v6
+        - ppc64le
+        - riscv64
+        - s390x
