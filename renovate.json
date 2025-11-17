@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$/",
+        "/(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?) currentValue=(?<currentValue>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s(?:ENV|ARG)\\s+[A-Za-z0-9_]+?_REF(?:ERENCE)?[ =][\"']?(?<currentDigest>.+?)[\"']?\\s"
+      ]
+    }
+  ],
+  "reviewers": [
+    "crys"
+  ]
+}
