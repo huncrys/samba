@@ -6,20 +6,21 @@ FROM --platform=${BUILDPLATFORM} alpine:3.23@sha256:51183f2cfa6320055da30872f211
 
 SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
 
-COPY --from=xx / /
-ARG TARGETPLATFORM
 RUN --mount=type=cache,target=/var/cache/apk \
-<<EOF
     apk add -uU \
         clang \
         llvm \
         make \
     ;
+
+COPY --from=xx / /
+ARG TARGETPLATFORM
+RUN --mount=type=cache,target=/var/cache/apk \
     xx-apk add -uU \
         gcc \
         musl-dev \
-        linux-headers
-EOF
+        linux-headers \
+    ;
 
 # renovate: datasource=git-refs depName=Netgear/wsdd2 currentValue=master packageName=https://github.com/Netgear/wsdd2
 ARG WSDD2_REFERENCE=b676d8ac8f1aef792cb0761fb68a0a589ded3207
@@ -28,7 +29,7 @@ WORKDIR /wsdd2-master
 
 RUN <<EOF
     xx-clang --setup-target-triple
-    sed -i 's/-O0/-O0 -Wno-int-conversion -Wno-missing-field-initializers/g' Makefile
+    sed -i 's/-O0/-O0 -Wno-int-conversion -Wno-missing-field-initializers -Wno-format -Wno-sign-compare/g' Makefile
     make CC=xx-clang
     llvm-strip wsdd2
     xx-verify wsdd2
@@ -39,7 +40,9 @@ FROM alpine:3.23@sha256:51183f2cfa6320055da30872f211093f9ff1d3cf06f39a0bdb212314
 
 ENV PATH="/container/scripts:${PATH}"
 
-RUN apk add --no-cache runit \
+
+RUN --mount=type=cache,target=/var/cache/apk \
+    apk add --no-cache runit \
                        tzdata \
                        avahi \
                        samba \
