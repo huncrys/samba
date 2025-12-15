@@ -1,26 +1,41 @@
 # syntax=docker/dockerfile:1
 
-FROM alpine:3.23@sha256:51183f2cfa6320055da30872f211093f9ff1d3cf06f39a0bdb212314c5dc7375 AS base
+FROM --platform=${BUILDPLATFORM} tonistiigi/xx:1.9.0@sha256:c64defb9ed5a91eacb37f96ccc3d4cd72521c4bd18d5442905b95e2226b0e707 AS xx
 
-FROM base AS wsdd2-builder
+FROM --platform=${BUILDPLATFORM} alpine:3.23@sha256:51183f2cfa6320055da30872f211093f9ff1d3cf06f39a0bdb212314c5dc7375 AS wsdd2-builder
 
-RUN apk add --no-cache --update \
-    make \
-    gcc \
-    libc-dev \
-    linux-headers
+SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
+
+COPY --from=xx / /
+ARG TARGETPLATFORM
+RUN --mount=type=cache,target=/var/cache/apk \
+<<EOF
+    apk add -uU \
+        clang \
+        llvm \
+        make \
+    ;
+    xx-apk add -uU \
+        gcc \
+        musl-dev \
+        linux-headers
+EOF
 
 # renovate: datasource=git-refs depName=Netgear/wsdd2 currentValue=master packageName=https://github.com/Netgear/wsdd2
 ARG WSDD2_REFERENCE=b676d8ac8f1aef792cb0761fb68a0a589ded3207
 ADD https://github.com/Netgear/wsdd2.git#${WSDD2_REFERENCE} /wsdd2-master
 WORKDIR /wsdd2-master
-RUN sed -i 's/-O0/-O0 -Wno-int-conversion -Wno-calloc-transposed-args -Wno-missing-field-initializers/g' Makefile && \
-    make && \
-    strip wsdd2
 
-FROM base
+RUN <<EOF
+    xx-clang --setup-target-triple
+    sed -i 's/-O0/-O0 -Wno-int-conversion -Wno-missing-field-initializers/g' Makefile
+    make CC=xx-clang
+    llvm-strip wsdd2
+    xx-verify wsdd2
+    file wsdd2
+EOF
 
-COPY --from=wsdd2-builder /wsdd2-master/wsdd2 /usr/sbin
+FROM alpine:3.23@sha256:51183f2cfa6320055da30872f211093f9ff1d3cf06f39a0bdb212314c5dc7375
 
 ENV PATH="/container/scripts:${PATH}"
 
@@ -34,7 +49,9 @@ RUN apk add --no-cache runit \
  \
  && mkdir -p /external/avahi \
  && touch /external/avahi/not-mounted \
- && echo done
+ && echo "done"
+
+COPY --from=wsdd2-builder /wsdd2-master/wsdd2 /usr/sbin/wsdd2
 
 VOLUME ["/shares"]
 
