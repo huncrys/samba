@@ -2,7 +2,7 @@
 
 FROM --platform=${BUILDPLATFORM} tonistiigi/xx:1.9.0@sha256:c64defb9ed5a91eacb37f96ccc3d4cd72521c4bd18d5442905b95e2226b0e707 AS xx
 
-FROM --platform=${BUILDPLATFORM} alpine:3.23@sha256:51183f2cfa6320055da30872f211093f9ff1d3cf06f39a0bdb212314c5dc7375 AS wsdd2-builder
+FROM --platform=${BUILDPLATFORM} alpine:3.23@sha256:865b95f46d98cf867a156fe4a135ad3fe50d2056aa3f25ed31662dff6da4eb62 AS wsdd2-builder
 
 SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
 
@@ -36,7 +36,7 @@ RUN <<EOF
     file wsdd2
 EOF
 
-FROM alpine:3.23@sha256:51183f2cfa6320055da30872f211093f9ff1d3cf06f39a0bdb212314c5dc7375
+FROM alpine:3.23@sha256:865b95f46d98cf867a156fe4a135ad3fe50d2056aa3f25ed31662dff6da4eb62
 
 ENV PATH="/container/scripts:${PATH}"
 
