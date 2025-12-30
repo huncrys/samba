@@ -2,8 +2,8 @@ variables:
   CI_DOCKERHUB_IMAGE: huncrys/samba
 
 include:
-  - component: $CI_SERVER_FQDN/oaklab/ci-templates/hadolint@10
-  - component: $CI_SERVER_FQDN/oaklab/ci-templates/oci-publish@10
+  - component: $CI_SERVER_FQDN/oaklab/ci-templates/hadolint@11
+  - component: $CI_SERVER_FQDN/oaklab/ci-templates/oci-publish@11
     inputs:
       licenses: AGPL-3.0-or-later
       platforms:
