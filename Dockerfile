@@ -22,9 +22,9 @@ RUN --mount=type=cache,target=/var/cache/apk \
         linux-headers \
     ;
 
-# renovate: datasource=git-refs depName=Netgear/wsdd2 currentValue=master packageName=https://github.com/Netgear/wsdd2
+# renovate: datasource=git-refs depName=mirrors/wsdd2 currentValue=master packageName=https://oaklab.hu/mirrors/wsdd2
 ARG WSDD2_REFERENCE=b676d8ac8f1aef792cb0761fb68a0a589ded3207
-ADD https://github.com/Netgear/wsdd2.git#${WSDD2_REFERENCE} /wsdd2-master
+ADD https://oaklab.hu/mirrors/wsdd2.git#${WSDD2_REFERENCE} /wsdd2-master
 WORKDIR /wsdd2-master
 
 RUN <<EOF
