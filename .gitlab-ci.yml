@@ -1,3 +1,10 @@
+spec:
+  inputs:
+    no-cache:
+      type: boolean
+      default: false
+      description: Whether to disable the build cache when building the image.
+---
 variables:
   CI_DOCKERHUB_IMAGE: huncrys/samba
 
@@ -16,3 +23,4 @@ include:
         - linux/riscv64
         - linux/s390x
       registry-cache: true
+      no-cache: $[[ inputs.no-cache ]]
